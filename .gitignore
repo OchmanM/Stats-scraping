@@ -1,0 +1,7 @@
+mysite/mysite/settings.py
+.idea/
+env/
+venv/
+*.zip
+
+__pycache__/
