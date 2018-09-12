@@ -35,22 +35,26 @@ def get_field_value(tree, i):
 def normalize_datetime(dateString):
     return datetime.strptime(dateString,'%d %B %Y (%H:%M)')
 
-# Gets data from format:
-# [01 August 2018 (20:55)] Killed at level 103 by player:
 
-# Returns Date (string)
+
+# Gets data from format:
+# [01 August 2018 (20:55)] Killed at level 103 by player: Nickname
+
+# Given deathlist text, parses it to return Date
+# Returns date in string format
 def deathlist_get_date(text):
     result = re.search(r'\[(.*?)\]', text)
     return result.group(1) if result else None
 
 
-# Returns Level (string)
+# Given deathlist text, parses it to return level
+# Returns string
 def deathlist_get_level(text):
     result = re.search(r'level (\d*) ', text)
     return result.group(1) if result else None
 
-
+# Given deathlist text, parses it to check if death was due to PvP
 # Returns True / False (bool)
 def deathlist_is_pvp(text):
-    result = re.search(r'by a.?(.*)', text)
-    return False if result else True
+    result = re.search(r'by player?(.*)', text)
+    return True if result else False

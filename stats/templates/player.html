@@ -61,6 +61,7 @@
                                             <table id="datatable2" class="table order-column hover">
                                                 <thead>
                                                     <tr>
+                                                        <th>Index</th>
                                                         <th>Text</th>
                                                         <th>Date</th>
                                                         <th>Killed</th>
@@ -71,6 +72,46 @@
                                                 <tbody>
                                                     {% for death in deaths %}
                                                         <tr class="gradeX">
+                                                            <td> {{ forloop.counter }}</td>
+                                                            <td>{{ death.text }}</td>
+                                                            <td>{{ death.date }}</td>
+                                                            <td><a href="{% url 'player_details' death.killed %}">{{ death.killed }}</a></td>
+                                                            <td>{{ death.level }}</td>
+                                                            {% if death.killer %}
+                                                                <td><a href="{% url 'player_details' death.killer %}">{{ death.killer }}</a></td>
+                                                            {% else %}
+                                                                <td>----</td>
+                                                            {% endif %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div><!--end .table-responsive -->
+                                    </div>
+                                                                        <div class="card-head style-primary">
+                                        <header>Kills</header>
+                                        <div class="tools">
+                                            <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                                            <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="datatable2" class="table order-column hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Index</th>
+                                                        <th>Text</th>
+                                                        <th>Date</th>
+                                                        <th>Killed</th>
+                                                        <th>Level</th>
+                                                        <th>Killed by</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for death in kills %}
+                                                        <tr class="gradeX">
+                                                            <td> {{ forloop.counter }}</td>
                                                             <td>{{ death.text }}</td>
                                                             <td>{{ death.date }}</td>
                                                             <td><a href="{% url 'player_details' death.killed %}">{{ death.killed }}</a></td>

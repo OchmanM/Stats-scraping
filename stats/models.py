@@ -67,3 +67,10 @@ class OnlineDetails(models.Model):
 
     class Meta:
         ordering = ('logout', 'login')
+
+
+class CeleryInUse(models.Model):
+    is_in_use = models.BooleanField()
+
+    def __str__(self):
+        return str(self.is_in_use)

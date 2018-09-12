@@ -10,7 +10,7 @@ logging.basicConfig(filename='webscrap.log',
                     level=logging.DEBUG,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
 
-waiting_time = 3
+waiting_time = 4
 # Returns list of online players from onlineURL
 # Returns list
 def get_online():

@@ -68,10 +68,10 @@
                                             <table id="datatable2" class="table order-column hover">
                                                 <thead>
                                                     <tr>
+                                                        <th>Index</th>
+                                                        <th>Date</th>
                                                         <th scope="row">Killed</th>
                                                         <th>Text</th>
-                                                        <th>Date</th>
-
                                                         <th>Level</th>
                                                         <th>Killed by</th>
                                                     </tr>
@@ -79,10 +79,10 @@
                                                 <tbody>
                                                     {% for death in deaths %}
                                                         <tr class="gradeX">
+                                                            <td> {{ forloop.counter }}</td>
+                                                            <td>{{ death.date }}</td>
                                                             <td scope="row"><a href="{% url 'player_details' death.killed %}">{{ death.killed }}</a></td>
                                                             <td>{{ death.text }}</td>
-                                                            <td>{{ death.date }}</td>
-
                                                             <td>{{ death.level }}</td>
                                                             <td><a href="{% url 'player_details' death.killer %}">{{ death.killer }}</a></td>
                                                         </tr>
@@ -116,6 +116,7 @@
                                             <table id="datatable2" class="table order-column hover">
                                                 <thead>
                                                     <tr>
+                                                        <th>Index</th>
                                                         <th>Killed</th>
                                                         <th>Text</th>
                                                         <th>Date</th>
@@ -127,9 +128,10 @@
                                                 <tbody>
                                                     {% for death in kills %}
                                                         <tr class="gradeX">
+                                                            <td> {{ forloop.counter }}</td>
+                                                            <td>{{ death.date }}</td>
                                                             <td><a href="{% url 'player_details' death.killed %}">{{ death.killed }}</a></td>
                                                             <td>{{ death.text }}</td>
-                                                            <td>{{ death.date }}</td>
                                                             <td>{{ death.level }}</td>
                                                             <td><a href="{% url 'player_details' death.killer %}">{{ death.killer }}</a></td>
                                                         </tr>

@@ -22,53 +22,51 @@ def create_player(name, info=None):
 
 
 # Returns list of characters which have OnlineDetails logout empty
+# Returns list of strings
 def get_online_by_database():
     players = OnlineDetails.objects.filter(logout__isnull=True)
-    players_name = []
+    names = []
     try:
         if players:
-            for each in players:
-                try:
-                    name = Player.objects.get(pk=each.id).name
-                    players_name.insert(len(players_name), name)
-                except Player.DoesNotExist:
-                    logging.critical("[LOGOUT CHARS] Deadpoint. Player %s does not exist in player database. Setting his logout as now" % each)
-                    OnlineDetails.objects.filter(pk=each.id).update(logout = datetime.now())
+            names = [Player.objects.get(pk=each).name for each in players.values_list('player', flat=True)]
+            logging.info("[GET ONLINE BY DB] Collected Names: % s" % names)
 
     except Exception as e:
-        logging.critical("[LOGOUT CHARS] Couldn't update or create object %s " % str(players_name))
         logging.critical("[LOGOUT CHARS] Error: %s " % e)
-    logging.info("[GET ONLINE BY DB] Collected Names: % s" % players_name)
-    return players_name
+
+    return names
 
 
 # Update_or_create based on get_player_info() from webpage
 # Void
-def update_player_info(playerName):
-    player_info = webscrap_functions.get_player_info(playerName, True)
-    create_player(playerName, player_info)
+
+# [OBSOLETE]?
+def update_player_info(player_name):
+    player_info = webscrap_functions.get_player_info(player_name, True)
+    create_player(player_name, player_info)
     try:
         player_update = {}
-        player_update['player'] = Player.objects.get(name=playerName)
+        player_update['player'] = Player.objects.get(name=player_name)
         player_update['level'] = player_info['level']
         if player_info['status'] == "OFFLINE":
             player_update['logout'] = datetime.now()
         logging.debug("[UPDATE ONLINE] Adding online details %s " % player_update)
 
-        Player.objects.update_or_create(login=player_info['lastlogin'], defaults = {**player_update})
+        OnlineDetails.objects.update_or_create(login=player_info['lastlogin'], defaults = {**player_update})
 
     except Exception as e:
-        logging.critical("[UPDATE PLAYER INFO] Couldn't update or create object %s " % playerName)
+        logging.critical("[UPDATE PLAYER INFO] Couldn't update or create object %s " % player_name)
         logging.critical("[UPDATE PLAYER INFO] Error: %s " % e)
 
 
 # Updates Offline date to OnlineDetails
 # Void
-def update_offline(playerName):
+def update_offline(player_name):
     try:
-        is_online = OnlineDetails.objects.filter(logout__isnull=True, player=get_player_id(playerName)).update(logout = datetime.now())
+        is_online = OnlineDetails.objects.filter(logout__isnull=True, player=get_player_id(player_name)).update(logout = datetime.now())
+        logging.info("[UPDATE_ONLINE] Setting %s to offline" % player_name)
 
-    except is_online.DoesNotExist:
+    except OnlineDetails.DoesNotExist:
         logging.critical("[UPDATE OFFLINE] Person is offline already")
 
 
@@ -79,6 +77,7 @@ def update_online(player_name):
         try:
             OnlineDetails.objects.create(player=Player.objects.get(name=player_name),
                                          login=datetime.now())
+            logging.info("[UPDATE_ONLINE] Setting %s to online" % player_name)
         except Exception as e:
             logging.critical("[UPDATE_ONLINE] %s" %e)
     else:
@@ -89,7 +88,7 @@ def update_online(player_name):
 # Returns ID or None
 def get_player_id(playerName):
     try:
-        exists = Player.objects.get(name=playerName)
+        exists = Player.objects.get(name=playerNameG)
     except Player.DoesNotExist:
         create_player(playerName)
         try:
@@ -107,7 +106,28 @@ def is_online(playerName):
             logout__isnull=True,
             player=get_player_id(playerName)
             )
-    except get_online.DoesNotExist:
+    except OnlineDetails.DoesNotExist:
         get_online = False
     return True if get_online else False
 
+
+# Checks if CeleryInUse.is_in_use == True.
+# Returns True or False
+def get_celery_blocker():
+    try:
+        get_celery = CeleryInUse.objects.get(is_in_use=True)
+        return True
+    except CeleryInUse.DoesNotExist:
+        return False
+
+
+# Switches CeleryInUse.is_in_use from value_get to value_set
+# Void
+def switch_celery_in_use(value_get, value_set):
+    try:
+        get_celery = CeleryInUse.objects.get(is_in_use=value_get)
+        get_celery.is_in_use = value_set
+        get_celery.save(update_fields=['is_in_use'])
+
+    except CeleryInUse.DoesNotExist:
+        pass
