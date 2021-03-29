@@ -34,7 +34,7 @@ prettytable==0.7.2
 ptyprocess==0.6.0
 PyAutoGUI==0.9.36
 pycparser==2.18
-Pygments==2.2.0
+Pygments==2.7.4
 PyMsgBox==1.0.6
 PyMySQL==0.8.1
 pyparsing==2.2.0
